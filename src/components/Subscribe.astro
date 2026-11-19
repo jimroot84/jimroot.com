@@ -29,8 +29,10 @@ const ready = site.kit_form_id && !site.kit_form_id.startsWith('YOUR-');
   .sub-form { flex: 1 1 340px; display: flex; flex-wrap: wrap; gap: 10px; }
   .sub-form input {
     flex: 1 1 220px; min-height: 46px; padding: 0 14px; border-radius: 10px;
-    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; font-size: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.38); background: #0e0f12; color: var(--text); font: inherit; font-size: 16px;
   }
+  .sub-form input::placeholder { color: var(--faint); }
+  .sub-form input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(227, 182, 100, 0.25); }
   .sub-form button[disabled] { opacity: 0.5; cursor: not-allowed; }
   .sub-note { flex-basis: 100%; font-size: 13px; color: var(--faint); }
   .sub-rss { flex-basis: 100%; font-size: 13px; color: var(--faint); }
