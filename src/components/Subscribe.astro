@@ -1,0 +1,38 @@
+---
+import site from '../data/site.json';
+const ready = site.kit_form_id && !site.kit_form_id.startsWith('YOUR-');
+---
+<section id="subscribe" class="sub card">
+  <div class="sub-text">
+    <div class="label">Subscribe</div>
+    <h2>{site.subscribe_heading}</h2>
+    <p>{site.subscribe_text}</p>
+  </div>
+  <form
+    class="sub-form"
+    action={`https://app.kit.com/forms/${site.kit_form_id}/subscriptions`}
+    method="post"
+  >
+    <label for="sub-email" class="visually-hidden">Email address</label>
+    <input id="sub-email" type="email" name="email_address" placeholder="you@example.com" autocomplete="email" required />
+    <button type="submit" class="btn btn-accent" disabled={!ready}>Subscribe</button>
+    {!ready && <p class="sub-note">Signup goes live once your Kit form ID is added in site settings.</p>}
+  </form>
+  <a class="sub-rss" href="/rss.xml">Prefer a feed reader? Use the RSS feed.</a>
+</section>
+
+<style>
+  .sub { padding: 28px; display: flex; flex-wrap: wrap; align-items: center; gap: 20px 32px; }
+  .sub-text { flex: 1 1 300px; display: flex; flex-direction: column; gap: 8px; }
+  .sub-text h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+  .sub-text p { font-size: 15px; line-height: 1.6; color: var(--muted); }
+  .sub-form { flex: 1 1 340px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .sub-form input {
+    flex: 1 1 220px; min-height: 46px; padding: 0 14px; border-radius: 10px;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; font-size: 15px;
+  }
+  .sub-form button[disabled] { opacity: 0.5; cursor: not-allowed; }
+  .sub-note { flex-basis: 100%; font-size: 13px; color: var(--faint); }
+  .sub-rss { flex-basis: 100%; font-size: 13px; color: var(--faint); }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>

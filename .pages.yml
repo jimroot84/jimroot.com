@@ -1,0 +1,135 @@
+# Pages CMS configuration: https://pagescms.org/docs/
+# Open https://app.pagescms.org on your phone, sign in with GitHub, and pick this repo.
+
+media:
+  input: src/assets/photos
+  output: /src/assets/photos
+  categories: [image]
+  extensions: [jpg, jpeg, png, webp]
+  rename: safe
+
+content:
+  - name: photos
+    label: Camera Roll
+    type: collection
+    path: src/content/photos
+    filename: "{year}-{month}-{day}-{location}.md"
+    view:
+      fields: [location, date]
+      primary: location
+      sort: [date, location]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: image
+        label: Photo
+        type: image
+        required: true
+      - name: location
+        label: Location or title
+        type: string
+        required: true
+        description: "Shown on the photo, e.g. \"Jordan Pond, Bar Harbor, ME\""
+      - name: caption
+        label: Short caption (optional)
+        type: string
+      - name: date
+        label: Date
+        type: date
+        options:
+          format: yyyy-MM-dd
+      - name: alt
+        label: Photo description (optional)
+        type: string
+        description: "What's in the photo, for people using screen readers"
+      - name: pinned
+        label: Pin to the top of the homepage
+        type: boolean
+        description: "Normally the newest photo is shown at the top. Turn this on to feature this one instead."
+
+  - name: site
+    label: Site info & flock counts
+    type: file
+    path: src/data/site.json
+    format: json
+    fields:
+      - name: name
+        label: Name
+        type: string
+      - name: location
+        label: Town, State
+        type: string
+      - name: headshot
+        label: Profile photo
+        type: image
+      - name: intro_heading
+        label: Intro heading
+        type: string
+      - name: intro
+        label: Intro line
+        type: text
+      - name: about_heading
+        label: About heading
+        type: string
+      - name: about
+        label: About text
+        type: text
+      - name: about_photo
+        label: About photo
+        type: image
+      - name: about_tags
+        label: About tags
+        type: string
+        list: true
+      - name: linkedin_url
+        label: LinkedIn profile URL
+        type: string
+      - name: contact_heading
+        label: Contact heading
+        type: string
+      - name: contact_text
+        label: Contact text
+        type: text
+      - name: contact_photo
+        label: Contact background photo
+        type: image
+      - name: web3forms_access_key
+        label: Web3Forms access key
+        type: string
+        description: "From web3forms.com. Messages from the contact form go to the email you registered there."
+      - name: kit_form_id
+        label: Kit form ID
+        type: string
+        description: "The number in your Kit form's URL (app.kit.com/forms/123456/edit)."
+      - name: subscribe_heading
+        label: Subscribe heading
+        type: string
+      - name: subscribe_text
+        label: Subscribe text
+        type: text
+      - name: crew
+        label: Winston & the flock
+        type: object
+        fields:
+          - name: name
+            label: Name
+            type: string
+          - name: title
+            label: Title
+            type: string
+          - name: bio
+            label: Bio
+            type: text
+          - name: photo
+            label: Photo
+            type: image
+          - name: chickens
+            label: Chickens
+            type: number
+          - name: roosters
+            label: Roosters
+            type: number
+          - name: ducks
+            label: Ducks
+            type: number

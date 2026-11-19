@@ -1,0 +1,28 @@
+{
+  "name": "Jim Root",
+  "location": "Montoursville, PA",
+  "headshot": "/src/assets/photos/jim-headshot.jpg",
+  "intro_heading": "Hi, I'm Jim.",
+  "intro": "Technology by day, a small homestead after hours, and a camera on every trip. Here's what I've been seeing.",
+  "about_heading": "Curious by nature, outdoors by choice.",
+  "about": "I've built a career in technology, and I bring the same curiosity home to a small homestead in north-central Pennsylvania. This site is where I share the places I explore, life at home, and the occasional project I'm tinkering with.",
+  "about_photo": "/src/assets/photos/hyner-view.jpg",
+  "about_tags": ["Technology", "Homestead", "Photography", "Adventure"],
+  "linkedin_url": "https://www.linkedin.com/",
+  "contact_heading": "Let's talk.",
+  "contact_text": "Technology, homestead life or a trail recommendation. Messages go straight to my inbox.",
+  "contact_photo": "/src/assets/photos/canandaigua.jpg",
+  "web3forms_access_key": "YOUR-WEB3FORMS-ACCESS-KEY",
+  "kit_form_id": "YOUR-KIT-FORM-ID",
+  "subscribe_heading": "Get new photos by email",
+  "subscribe_text": "A short note when I've posted something new. No spam, unsubscribe anytime.",
+  "crew": {
+    "name": "Winston",
+    "title": "Flock Supervisor",
+    "bio": "A yellow Lab who's all smiles and has never met a stranger. Winston loves everyone, keeps an eye on the flock, and shows up in more of these photos than I do.",
+    "photo": "/src/assets/photos/winston-red-maple.jpg",
+    "chickens": 27,
+    "roosters": 3,
+    "ducks": 4
+  }
+}

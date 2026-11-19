@@ -1,0 +1,57 @@
+---
+import { Image, getImage } from 'astro:assets';
+import type { Photo } from '../lib/photos';
+import { formatDate } from '../lib/photos';
+
+interface Props {
+  photo: Photo;
+  sizes: string;
+  class?: string;
+  natural?: boolean; // keep the photo's own shape (Camera Roll page)
+  eager?: boolean;
+}
+const { photo, sizes, class: cls, natural = false, eager = false } = Astro.props;
+// Large copy opened by the lightbox.
+const full = await getImage({ src: photo.image, width: Math.min(photo.image.width, 2200), format: 'webp' });
+const date = formatDate(photo.date);
+---
+<figure id={photo.id} class:list={['tile', cls, { natural }]}>
+  <a
+    href={full.src}
+    class="tile-link"
+    data-lightbox
+    data-title={photo.location}
+    data-caption={photo.caption}
+    data-date={date}
+    data-alt={photo.alt}
+    aria-label={`View ${photo.location} full size`}
+  >
+    <Image
+      src={photo.image}
+      alt={photo.alt}
+      widths={[480, 800, 1200, 1600]}
+      sizes={sizes}
+      loading={eager ? 'eager' : 'lazy'}
+      class="tile-img"
+    />
+  </a>
+  <figcaption class="tile-cap">
+    <span class="tile-title">{photo.location}</span>
+    {date && <span class="tile-date mono">{date}</span>}
+  </figcaption>
+</figure>
+
+<style>
+  .tile { margin: 0; position: relative; border-radius: 14px; overflow: hidden; background: #1a1c20; }
+  .tile-link { display: block; height: 100%; }
+  .tile-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+  .tile-link:hover .tile-img { transform: scale(1.02); }
+  .natural .tile-img { height: auto; }
+  .tile-cap {
+    position: absolute; left: 12px; bottom: 12px; right: 12px; width: fit-content; max-width: calc(100% - 24px);
+    display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px;
+    background: var(--scrim); font-size: 13px; color: var(--text); pointer-events: none;
+  }
+  .tile-title { font-weight: 700; }
+  .tile-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
+</style>

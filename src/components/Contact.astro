@@ -1,0 +1,97 @@
+---
+import { Image } from 'astro:assets';
+import site from '../data/site.json';
+import { img } from '../lib/photos';
+const ready = site.web3forms_access_key && !site.web3forms_access_key.startsWith('YOUR-');
+---
+<section id="contact" class="contact">
+  <Image src={img(site.contact_photo)} alt="" widths={[800, 1400, 2000]} sizes="100vw" class="contact-bg" />
+  <div class="contact-inner">
+    <div class="contact-text">
+      <div class="label">Contact</div>
+      <h2>{site.contact_heading}</h2>
+      <p>{site.contact_text}</p>
+      <a class="contact-li" href={site.linkedin_url} target="_blank" rel="noopener">Or connect on LinkedIn ↗</a>
+    </div>
+    <form class="contact-form" action="https://api.web3forms.com/submit" method="POST" data-contact>
+      <input type="hidden" name="access_key" value={site.web3forms_access_key} />
+      <input type="hidden" name="subject" value={`New message from ${site.name}'s website`} />
+      <input type="hidden" name="from_name" value={`${site.name} website`} />
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+      <div class="row">
+        <div class="field">
+          <label for="c-name">Name</label>
+          <input id="c-name" name="name" type="text" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="c-email">Email</label>
+          <input id="c-email" name="email" type="email" autocomplete="email" required />
+        </div>
+      </div>
+      <div class="field">
+        <label for="c-msg">Message</label>
+        <textarea id="c-msg" name="message" rows="4" required></textarea>
+      </div>
+      <div class="actions">
+        <button type="submit" class="btn btn-accent" disabled={!ready}>Send message</button>
+        <p class="status" role="status" aria-live="polite">{!ready && 'The form goes live once your Web3Forms key is added in site settings.'}</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('form[data-contact]');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = form.querySelector<HTMLElement>('.status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    button.disabled = true;
+    status.textContent = 'Sending…';
+    try {
+      const body = JSON.stringify(Object.fromEntries(new FormData(form)));
+      const res = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body,
+      });
+      const json = await res.json();
+      if (res.status === 200) {
+        status.textContent = 'Thanks! Your message is on its way.';
+        form.reset();
+      } else {
+        status.textContent = json.message || 'Something went wrong. Please try again.';
+      }
+    } catch {
+      status.textContent = 'Something went wrong. Please try again.';
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+
+<style>
+  .contact { position: relative; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); background: #121316; }
+  .contact-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .contact-inner { position: relative; background: rgba(10, 11, 13, 0.8); padding: 32px; display: flex; flex-wrap: wrap; gap: 32px 40px; }
+  .contact-text { flex: 1 1 280px; display: flex; flex-direction: column; gap: 14px; }
+  .contact-text h2 { font-size: 36px; line-height: 1.08; font-weight: 800; letter-spacing: -0.03em; }
+  .contact-text p { font-size: 16px; line-height: 1.6; color: #c9ccd3; }
+  .contact-li { align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; color: var(--text); font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--accent); }
+  .contact-form { flex: 1.3 1 340px; display: flex; flex-direction: column; gap: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .row .field { flex: 1 1 180px; }
+  .field label { font-size: 13px; font-weight: 600; color: #c9ccd3; }
+  .field input, .field textarea {
+    font: inherit; font-size: 15px; padding: 12px 14px; border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.07); color: var(--text);
+  }
+  .field input { min-height: 46px; padding-top: 0; padding-bottom: 0; }
+  .field textarea { resize: vertical; }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+  .actions button[disabled] { opacity: 0.6; cursor: not-allowed; }
+  .status { font-size: 14px; color: #c9ccd3; }
+  .hp { display: none; }
+  @media (min-width: 900px) { .contact-inner { padding: 40px; } }
+</style>

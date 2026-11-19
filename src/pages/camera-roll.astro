@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import PhotoTile from '../components/PhotoTile.astro';
+import Subscribe from '../components/Subscribe.astro';
+import { getPhotos } from '../lib/photos';
+
+const photos = await getPhotos();
+---
+<Base title="Camera Roll" description="Photos from home, the trail and the road.">
+  <header class="intro">
+    <h1>Camera Roll</h1>
+    <p>Photos from home, the trail and the road. Tap any photo to see it full size.</p>
+  </header>
+
+  <div class="masonry">
+    {photos.map((p, i) => (
+      <PhotoTile photo={p} natural eager={i < 3} sizes="(min-width: 1300px) 30vw, (min-width: 900px) 45vw, (min-width: 600px) 50vw, 100vw" />
+    ))}
+  </div>
+
+  <Subscribe />
+</Base>
+
+<style>
+  .intro { display: flex; flex-direction: column; gap: 8px; }
+  .intro h1 { font-size: clamp(32px, 5vw, 44px); font-weight: 800; letter-spacing: -0.035em; }
+  .intro p { font-size: 17px; color: var(--muted); }
+  .masonry { columns: 1; column-gap: 14px; }
+  .masonry :global(.tile) { break-inside: avoid; margin-bottom: 14px; }
+  @media (min-width: 600px) { .masonry { columns: 2; } }
+  @media (min-width: 1300px) { .masonry { columns: 3; } }
+</style>

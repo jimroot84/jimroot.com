@@ -1,0 +1,187 @@
+---
+import { Image } from 'astro:assets';
+import site from '../data/site.json';
+import { img } from '../lib/photos';
+import Lightbox from '../components/Lightbox.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description = site.intro } = Astro.props;
+const pageTitle = title ? `${title} · ${site.name}` : site.name;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const icons = {
+  home: 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z',
+  camera: 'M4 7h3l2-3h6l2 3h3v13H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+  crew: 'M12 3c3.5 0 7 5.5 7 10.5A7 7 0 0 1 5 13.5C5 8.5 8.5 3 12 3z',
+  about: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-4 4.5-6 8-6s7 2 8 6',
+  contact: 'M3 5h18v14H3zM3 6l9 7 9-7',
+};
+const nav = [
+  { label: 'Home', href: '/', icon: icons.home, active: path === '/' },
+  { label: 'Camera Roll', href: '/camera-roll/', icon: icons.camera, active: path === '/camera-roll' },
+  { label: 'The crew', href: '/#crew', icon: icons.crew, active: false },
+  { label: 'About', href: '/#about', icon: icons.about, active: false },
+  { label: 'Contact', href: '/#contact', icon: icons.contact, active: false },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} — Camera Roll`} href="/rss.xml" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta name="theme-color" content="#0a0b0d" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="shell">
+      <aside class="side">
+        <a class="me" href="/">
+          <Image src={img(site.headshot)} alt="" width={112} height={112} class="avatar" />
+          <span class="me-text">
+            <span class="me-name">{site.name}</span>
+            <span class="me-loc">{site.location}</span>
+          </span>
+        </a>
+
+        <nav aria-label="Main" class="nav">
+          {nav.map((n) => (
+            <a href={n.href} class:list={['nav-link', { active: n.active }]} aria-current={n.active ? 'page' : undefined}>
+              <svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d={n.icon}></path></svg>
+              <span>{n.label}</span>
+            </a>
+          ))}
+        </nav>
+
+        <div class="side-actions">
+          <a class="btn btn-accent" href={site.linkedin_url} rel="me noopener" target="_blank">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+            Connect on LinkedIn
+          </a>
+          <a class="btn btn-outline" href="/#contact">Send a message</a>
+          <a class="btn btn-ghost" href="/#subscribe">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+            Subscribe
+          </a>
+        </div>
+      </aside>
+
+      <main id="main" class="main">
+        <slot />
+        <footer class="foot">
+          <span>© {new Date().getFullYear()} {site.name}</span>
+          <a href="/rss.xml">RSS feed</a>
+        </footer>
+      </main>
+    </div>
+    <Lightbox />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #0a0b0d;
+    --side: #0f1013;
+    --card: #16181c;
+    --border: #272a31;
+    --border-strong: #363a42;
+    --text: #f5f5f7;
+    --muted: #b6b9c1;
+    --faint: #90949d;
+    --chip: #22252b;
+    --active: #1e2126;
+    --accent: #e3b664;
+    --accent-text: #141414;
+    --scrim: rgba(10, 11, 13, 0.78);
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: var(--accent); }
+  h1, h2, h3, p { margin: 0; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .skip { position: absolute; left: -999px; top: 8px; background: var(--accent); color: var(--accent-text); padding: 8px 12px; border-radius: 8px; z-index: 50; }
+  .skip:focus { left: 8px; }
+
+  .shell { display: flex; flex-direction: column; min-height: 100vh; }
+  .side {
+    background: var(--side);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 16px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .me { display: flex; align-items: center; gap: 14px; padding: 0 8px; text-decoration: none; color: var(--text); }
+  .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); flex-shrink: 0; }
+  .me-text { display: flex; flex-direction: column; gap: 3px; }
+  .me-name { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  .me-loc { font-size: 13px; color: var(--muted); }
+
+  .nav { display: flex; flex-wrap: wrap; gap: 2px; }
+  .nav-link {
+    display: flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 12px;
+    border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 500; color: var(--muted);
+  }
+  .nav-link:hover { color: var(--text); background: var(--active); }
+  .nav-link.active { color: var(--text); background: var(--active); font-weight: 700; }
+  .nav-link.active svg { color: var(--accent); }
+
+  .side-actions { display: flex; flex-direction: column; gap: 8px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 44px; padding: 0 18px; border-radius: 10px;
+    font: inherit; font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer;
+  }
+  .btn-accent { background: var(--accent); color: var(--accent-text); border: 0; }
+  .btn-accent:hover { filter: brightness(1.08); }
+  .btn-outline { border: 1px solid var(--border-strong); color: var(--text); background: transparent; font-weight: 600; }
+  .btn-outline:hover { background: var(--active); }
+  .btn-ghost { color: var(--muted); background: transparent; border: 0; font-weight: 600; }
+  .btn-ghost:hover { color: var(--text); background: var(--active); }
+
+  .main { flex: 1; min-width: 0; padding: 24px 16px 32px; display: flex; flex-direction: column; gap: 28px; }
+  .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--faint); }
+  .foot a { color: var(--faint); }
+
+  .label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+  .section-head h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .section-head a { font-size: 14px; font-weight: 600; text-decoration: none; padding: 10px 0; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; }
+  .mono { font-family: var(--mono); }
+
+  @media (min-width: 900px) {
+    .shell { flex-direction: row; }
+    .side {
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+      flex: 0 0 280px; border-bottom: 0; border-right: 1px solid var(--border);
+      padding: 28px 18px; gap: 28px;
+    }
+    .nav { flex-direction: column; flex-wrap: nowrap; }
+    .main { padding: 32px 36px 40px; }
+  }
+  @media (max-width: 899px) {
+    .side-actions { flex-direction: row; flex-wrap: wrap; }
+    .side-actions .btn { flex: 1 1 auto; }
+  }
+</style>

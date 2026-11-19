@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Page not found">
+  <section class="nf">
+    <h1>Off the trail.</h1>
+    <p>That page doesn't exist. Head back <a href="/">home</a> or browse the <a href="/camera-roll/">Camera Roll</a>.</p>
+  </section>
+</Base>
+
+<style>
+  .nf { display: flex; flex-direction: column; gap: 12px; padding: 40px 0; }
+  .nf h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; }
+  .nf p { font-size: 17px; color: var(--muted); }
+</style>

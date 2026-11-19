@@ -1,0 +1,97 @@
+<dialog class="lb" aria-label="Photo viewer">
+  <button type="button" class="lb-btn lb-close" aria-label="Close">
+    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+  </button>
+  <button type="button" class="lb-btn lb-prev" aria-label="Previous photo">
+    <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"></path></svg>
+  </button>
+  <figure class="lb-fig">
+    <img class="lb-img" alt="" />
+    <figcaption class="lb-cap">
+      <span class="lb-title"></span>
+      <span class="lb-date"></span>
+      <span class="lb-text"></span>
+    </figcaption>
+  </figure>
+  <button type="button" class="lb-btn lb-next" aria-label="Next photo">
+    <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+  </button>
+</dialog>
+
+<script>
+  const dlg = document.querySelector<HTMLDialogElement>('.lb')!;
+  const imgEl = dlg.querySelector<HTMLImageElement>('.lb-img')!;
+  const titleEl = dlg.querySelector<HTMLElement>('.lb-title')!;
+  const dateEl = dlg.querySelector<HTMLElement>('.lb-date')!;
+  const textEl = dlg.querySelector<HTMLElement>('.lb-text')!;
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('a[data-lightbox]'));
+  let index = 0;
+
+  function show(i: number) {
+    index = (i + links.length) % links.length;
+    const a = links[index];
+    imgEl.src = a.href;
+    imgEl.alt = a.dataset.alt || '';
+    titleEl.textContent = a.dataset.title || '';
+    dateEl.textContent = a.dataset.date || '';
+    textEl.textContent = a.dataset.caption || '';
+    const multi = links.length > 1;
+    dlg.querySelector<HTMLElement>('.lb-prev')!.hidden = !multi;
+    dlg.querySelector<HTMLElement>('.lb-next')!.hidden = !multi;
+  }
+
+  links.forEach((a, i) => {
+    a.addEventListener('click', (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey) return; // let people open in a new tab
+      e.preventDefault();
+      show(i);
+      dlg.showModal();
+    });
+  });
+
+  dlg.querySelector('.lb-close')!.addEventListener('click', () => dlg.close());
+  dlg.querySelector('.lb-prev')!.addEventListener('click', () => show(index - 1));
+  dlg.querySelector('.lb-next')!.addEventListener('click', () => show(index + 1));
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(index - 1);
+    if (e.key === 'ArrowRight') show(index + 1);
+  });
+
+  // Swipe on phones
+  let startX = 0;
+  dlg.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+  dlg.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1));
+  });
+</script>
+
+<style>
+  .lb {
+    width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+    background: rgba(5, 6, 8, 0.96); color: var(--text);
+  }
+  .lb[open] { display: flex; align-items: center; justify-content: center; }
+  .lb::backdrop { background: rgba(0, 0, 0, 0.7); }
+  .lb-fig { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: calc(100vw - 32px); }
+  .lb-img { max-width: 100%; max-height: calc(100vh - 140px); width: auto; height: auto; border-radius: 8px; }
+  .lb-cap { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 12px; text-align: center; font-size: 15px; }
+  .lb-title { font-weight: 700; }
+  .lb-date { font-family: var(--mono); font-size: 12px; color: var(--muted); align-self: center; }
+  .lb-text { flex-basis: 100%; color: var(--muted); }
+  .lb-text:empty { display: none; }
+  .lb-btn {
+    position: absolute; width: 48px; height: 48px; border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(20, 22, 26, 0.8); color: var(--text);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .lb-btn:hover { background: rgba(40, 43, 50, 0.9); }
+  .lb-btn[hidden] { display: none; }
+  .lb-close { top: 16px; right: 16px; }
+  .lb-prev { left: 16px; top: 50%; transform: translateY(-50%); }
+  .lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
+  @media (max-width: 640px) {
+    .lb-prev, .lb-next { top: auto; bottom: 20px; transform: none; }
+  }
+</style>
