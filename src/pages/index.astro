@@ -9,7 +9,10 @@ import { getPhotos, img, formatDate } from '../lib/photos';
 
 const photos = await getPhotos();
 const hero = photos.find((p) => p.pinned) ?? photos[0];
-const rest = photos.filter((p) => p !== hero).slice(0, 5);
+const count = Number(site.homepage_photo_count) || 10;
+const rest = photos.filter((p) => p !== hero).slice(0, count);
+// Repeating mosaic: wide-left row, three across, wide-right row, three across.
+const tileClass = (i: number) => (i % 10 === 0 ? 'wide' : i % 10 === 6 ? 'wide' : '');
 const heroFull = hero ? await getImage({ src: hero.image, width: Math.min(hero.image.width, 2200), format: 'webp' }) : null;
 const crew = site.crew;
 ---
@@ -94,8 +97,8 @@ const crew = site.crew;
         {rest.map((p, i) => (
           <PhotoTile
             photo={p}
-            class={`m${i}`}
-            sizes={i === 0 ? '(min-width: 900px) 60vw, 100vw' : '(min-width: 900px) 30vw, 100vw'}
+            class={tileClass(i)}
+            sizes={tileClass(i) ? '(min-width: 900px) 60vw, 100vw' : '(min-width: 900px) 30vw, 100vw'}
           />
         ))}
       </div>
@@ -157,6 +160,7 @@ const crew = site.crew;
   @media (min-width: 700px) {
     .mosaic { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: 300px; }
     .mosaic :global(.tile) { aspect-ratio: auto; grid-column: span 2; }
-    .mosaic :global(.m0) { grid-column: span 4; }
+    .mosaic { grid-auto-flow: dense; }
+    .mosaic :global(.wide) { grid-column: span 4; }
   }
 </style>

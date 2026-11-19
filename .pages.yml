@@ -102,6 +102,13 @@ content:
         label: Kit form ID
         type: string
         description: "The number in your Kit form's URL (app.kit.com/forms/123456/edit)."
+      - name: homepage_photo_count
+        label: Photos on the homepage
+        type: number
+        description: "How many Camera Roll photos to show under the top photo (10 fills the grid evenly; 5 or 15 also work)."
+        options:
+          min: 1
+          max: 30
       - name: subscribe_heading
         label: Subscribe heading
         type: string
