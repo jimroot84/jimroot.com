@@ -4,10 +4,15 @@
   "headshot": "/src/assets/photos/jim-headshot.jpg",
   "intro_heading": "Hi, I'm Jim.",
   "intro": "Technology by day, a small homestead after hours, and a camera on every trip. Here's what I've been seeing.",
-  "about_heading": "Curious by nature, outdoors by choice.",
+  "about_heading": "Code, coops, and back roads.",
   "about": "I've built a career in technology, and I bring the same curiosity home to a small homestead in north-central Pennsylvania. This site is where I share the places I explore, life at home, and the occasional project I'm tinkering with.",
   "about_photo": "/src/assets/photos/hyner-view.jpg",
-  "about_tags": ["Technology", "Homestead", "Photography", "Adventure"],
+  "about_tags": [
+    "Technology",
+    "Homestead",
+    "Photography",
+    "Adventure"
+  ],
   "linkedin_url": "https://www.linkedin.com/",
   "contact_heading": "Let's talk.",
   "contact_text": "Technology, homestead life or a trail recommendation. Messages go straight to my inbox.",
